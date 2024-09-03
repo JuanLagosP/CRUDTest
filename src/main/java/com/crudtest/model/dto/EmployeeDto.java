@@ -8,12 +8,21 @@ public class EmployeeDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private String employeeNumber;
     private String name;
     private String surname;
     private String email;
     private String phone;
     private Date birthDate;
     private Date hireDate;
+
+    public String getEmployeeNumber() {
+        return employeeNumber;
+    }
+
+    public void setEmployeeNumber(String employeeNumber) {
+        this.employeeNumber = employeeNumber;
+    }
 
     public String getName() {
         return name;
