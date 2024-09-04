@@ -3,11 +3,12 @@ package com.crudtest.service;
 import com.crudtest.model.dto.EmployeeDto;
 import com.crudtest.model.entity.Employee;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface IEmployeeService {
-    List<Employee> findAllEmployees();
+    Page<Employee> findAllEmployees(int page, int size);
     Employee findByEmployeeNumber(String employeeNumber);
     Employee saveEmployee(EmployeeDto employee) throws DuplicateKeyException;
     Employee updateEmployee(String employeeNumber, EmployeeDto employee) throws DuplicateKeyException;

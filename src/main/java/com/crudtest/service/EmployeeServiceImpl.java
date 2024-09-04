@@ -5,6 +5,9 @@ import com.crudtest.model.entity.Employee;
 import com.crudtest.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,8 +66,9 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Employee> findAllEmployees() {
-        return employeeRepository.findAll();
+    public Page<Employee> findAllEmployees(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return employeeRepository.findAll(pageable);
     }
 
     @Override

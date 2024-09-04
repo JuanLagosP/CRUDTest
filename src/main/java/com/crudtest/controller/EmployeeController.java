@@ -6,6 +6,8 @@ import com.crudtest.service.EmployeeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +27,13 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public ResponseEntity<?> findAllEmployees() {
+    public ResponseEntity<?> findAllEmployees(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "8") int size) {
         Map<String, Object> response = new HashMap<>();
-        List<Employee> employees;
+        Page<Employee> employees;
 
         try {
-            employees = employeeService.findAllEmployees();
+            employees = employeeService.findAllEmployees(page, size);
         } catch (DataAccessException e) {
             response.put("message", "Error querying the database!");
             response.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
