@@ -15,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:4200")
 public class EmployeeController {
     private final EmployeeServiceImpl employeeService;
 
@@ -31,14 +32,14 @@ public class EmployeeController {
         try {
             employees = employeeService.findAllEmployees();
         } catch (DataAccessException e) {
-            response.put("message", "Error querying the database");
+            response.put("message", "Error querying the database!");
             response.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
 
             return ResponseEntity.status(500).body(response);
         }
 
         if (employees.isEmpty()) {
-            response.put("message", "No employees found");
+            response.put("message", "No employees found!");
 
             return ResponseEntity.status(404).body(response);
         }
@@ -54,14 +55,14 @@ public class EmployeeController {
         try {
             employee = employeeService.findByEmployeeNumber(employeeNumber);
         } catch (DataAccessException e) {
-            response.put("message", "Error querying the database");
+            response.put("message", "Error querying the database!");
             response.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
 
             return ResponseEntity.status(500).body(response);
         }
 
         if (employee == null) {
-            response.put("message", "Employee not found");
+            response.put("message", "Employee not found!");
 
             return ResponseEntity.status(404).body(response);
         }
@@ -81,7 +82,7 @@ public class EmployeeController {
 
             return ResponseEntity.status(400).body(response);
         } catch (DataAccessException e) {
-            response.put("message", "Error while persisting the employee to database");
+            response.put("message", "Error while persisting the employee to database!");
             response.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
 
             return ResponseEntity.status(500).body(response);
@@ -99,7 +100,7 @@ public class EmployeeController {
         Employee currentEmployee;
 
         if (!employeeService.existsByEmployeeNumber(employeeNumber)) {
-            response.put("message", "Employee not found");
+            response.put("message", "Employee not found!");
 
             return ResponseEntity.status(404).body(response);
         }
@@ -111,7 +112,7 @@ public class EmployeeController {
 
             return ResponseEntity.status(400).body(response);
         }   catch (DataAccessException e) {
-            response.put("message", "Error while updating the employee in database");
+            response.put("message", "Error while updating the employee in database!");
             response.put("error", e.getMessage().concat(e.getCause().getMessage()));
 
             return ResponseEntity.status(500).body(response);
@@ -127,10 +128,16 @@ public class EmployeeController {
     public ResponseEntity<?> deleteByEmployeeNumber(@PathVariable String employeeNumber) {
         Map<String, Object> response = new HashMap<>();
 
+        if (!employeeService.existsByEmployeeNumber(employeeNumber)) {
+            response.put("message", "Employee not found!");
+
+            return ResponseEntity.status(404).body(response);
+        }
+
         try {
             employeeService.deleteByEmployeeNumber(employeeNumber);
         } catch (DataAccessException e) {
-            response.put("message", "Error while deleting the employee from database");
+            response.put("message", "Error while deleting the employee from database!");
             response.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
 
             return ResponseEntity.status(500).body(response);
