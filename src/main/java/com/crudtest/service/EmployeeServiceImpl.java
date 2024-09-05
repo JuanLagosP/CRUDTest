@@ -10,9 +10,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.Year;
-import java.util.List;
+import java.util.Date;
+import java.util.Random;
 
 @Service
 public class EmployeeServiceImpl implements IEmployeeService {
@@ -24,20 +24,20 @@ public class EmployeeServiceImpl implements IEmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    private String generateEmployeeNumber() {
-        String currentYear = Year.now().toString();
-        long count = employeeRepository.count();
+    private String generateEmployeeNumber(EmployeeDto employee) {
+        Random rnd = new Random();
+        String hireYear = employee.getHireDate().toString().substring(30);
+        String initials = employee.getSurname().substring(0, 2) + employee.getName().charAt(0);
+        String rndNum = String.valueOf(1000 + rnd.nextInt(9000));
 
-        // In case there are no employees registered in the database
-        if (count == 0) {
-            return "E" + currentYear + "0001";
+        String employeeNumber = "E" + hireYear + initials.toUpperCase() + rndNum;
+
+        while(employeeRepository.existsByEmployeeNumber(employeeNumber)) {
+            rndNum = String.valueOf(1000 + rnd.nextInt(9000));
+            employeeNumber = "E" + hireYear + initials.toUpperCase() + rndNum;
         }
 
-        // In case an employee is deleted, its number will not be reused
-        String prevNumber = employeeRepository.findMaxEmployeeNumber().substring(5);
-        long nextNumber = Long.parseLong(prevNumber) + 1;
-
-        return "E" + currentYear + String.format("%04d", nextNumber);
+        return employeeNumber;
     }
 
     private void setAttributes(Employee employee, EmployeeDto employeeDto) {
@@ -91,7 +91,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
         }
 
         setAttributes(newEmployee, employee);
-        newEmployee.setEmployeeNumber(generateEmployeeNumber());
+        newEmployee.setEmployeeNumber(generateEmployeeNumber(employee));
 
         return employeeRepository.save(newEmployee);
     }
