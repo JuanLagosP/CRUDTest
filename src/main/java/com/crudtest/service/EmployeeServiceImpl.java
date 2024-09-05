@@ -1,6 +1,7 @@
 package com.crudtest.service;
 
 import com.crudtest.model.dto.EmployeeDto;
+import com.crudtest.model.dto.SearchInfoDto;
 import com.crudtest.model.entity.Employee;
 import com.crudtest.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.Year;
-import java.util.Date;
+
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -68,13 +69,19 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Transactional(readOnly = true)
     public Page<Employee> findAllEmployees(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return employeeRepository.findAll(pageable);
+        return employeeRepository.findAllOrderedByEmployeeNumber(pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Employee findByEmployeeNumber(String employeeNumber) {
         return employeeRepository.findByEmployeeNumber(employeeNumber);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Employee> findByNumberOrNameOrSurname(String searchVal) {
+        return employeeRepository.findByNumberOrNameOrSurname(searchVal);
     }
 
     @Override

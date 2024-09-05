@@ -1,6 +1,7 @@
 package com.crudtest.service;
 
 import com.crudtest.model.dto.EmployeeDto;
+import com.crudtest.model.dto.SearchInfoDto;
 import com.crudtest.model.entity.Employee;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
@@ -18,5 +19,8 @@ public interface IEmployeeService {
     Boolean existsByEmployeeNumber(String employeeNumber);
     Boolean existsByEmail(String email);
     Boolean existsByPhone(String phone);
+
+    // For search
+    List<Employee> findByNumberOrNameOrSurname(String searchVal);
 
 }

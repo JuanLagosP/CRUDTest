@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -69,6 +70,29 @@ public class EmployeeController {
         }
 
         return ResponseEntity.ok().body(employee);
+    }
+
+    @GetMapping("/employees/search")
+    public ResponseEntity<?> findByNumberOrNameOrSurname(@RequestParam String searchVal) {
+        Map<String, Object> response = new HashMap<>();
+        List<Employee> employees;
+
+        try {
+            employees = employeeService.findByNumberOrNameOrSurname(searchVal);
+        } catch (DataAccessException e) {
+            response.put("message", "Error querying the database!");
+            response.put("error", e.getMessage().concat(e.getMostSpecificCause().getMessage()));
+
+            return ResponseEntity.status(500).body(response);
+        }
+
+        if (employees.isEmpty()) {
+            response.put("message", "No results found!");
+
+            return ResponseEntity.status(404).body(response);
+        }
+
+        return ResponseEntity.ok().body(employees);
     }
 
     @PostMapping("/employees")
